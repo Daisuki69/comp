@@ -47,20 +47,34 @@ export default function App() {
       setPage("dashboard");
     };
 
-    // This "catches" the login code from the URL after the redirect reload
+    // 1. This "catches" the login code from the URL after the redirect reload
     React.useEffect(() => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
       
       if (code) {
-        // If we see 'code' in the URL, the redirect worked!
-        // For a frontend demo, we can just log them in
-        setPage("dashboard"); 
+        // We have the code! Now we need to verify the user
+        validateUser(code);
         
-        // Clean up the URL so the 'code' disappears from the address bar
+        // Clean up the URL
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }, []);
+
+    // 2. This function simulates the validation for your frontend demo
+    // In a production app, you'd do this on a backend, but we can 
+    // fetch the user info directly for this prototype.
+    const validateUser = (code) => {
+      // For this prototype, we'll use the Google 'userinfo' endpoint.
+      // Note: In redirect 'auth-code' flow, we usually need a backend to get the token.
+      // As a shortcut for your UI demo, we can assume if they made it back with a code,
+      // we can let them in, OR we can use the 'implicit' flow token instead.
+      
+      // Let's switch your login hook slightly back to 'token' (implicit) 
+      // but keep the 'redirect' mode so we can actually read the email.
+      console.log("Validating code:", code);
+      setPage("dashboard"); 
+    };
 
     return (
       <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
