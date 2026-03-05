@@ -30,52 +30,59 @@ export default function App() {
   const LoginPage = ({ setPage }) => {
     const [loginError, setLoginError] = useState(false);
 
-    // This version forces the redirect by using the 'auth-code' flow
-    const login = useGoogleLogin({
-      ux_mode: 'redirect',
-      flow: 'auth-code',
-      redirect_uri: 'http://localhost:5173', // Hardcode it for now to test locally
-      onSuccess: (codeResponse) => {
-        handleAuthCode(codeResponse.code);
-      },
-      onError: (error) => console.log('Login Failed:', error)
-    });
-
-    const handleAuthCode = (code) => {
-      // In a real app, you'd exchange this code for a token. 
-      // For your frontend prototype, we'll simulate the validation.
-      setPage("dashboard");
+    // The library automatically detects when you return from Google
+    // and fires this "onSuccess" instantly!
+    // We bypass the library entirely and force a full-page redirect to Google
+    const login = () => {
+      const clientId = "418147323545-a74an3aau45fm26b3buga7d85mkomd99.apps.googleusercontent.com";
+      const redirectUri = window.location.origin;
+      const scope = "email profile";
+      
+      // The 'prompt=select_account' part is the magic that forces the full-screen account chooser!
+      const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}&prompt=select_account`;
+      
+      window.location.href = googleLoginUrl; 
     };
 
-    // 1. This "catches" the login code from the URL after the redirect reload
-    React.useEffect(() => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      
-      if (code) {
-        // We have the code! Now we need to verify the user
-        validateUser(code);
+    // This asks Google for the email and blocks non-CEU accounts
+    const validateUser = (token) => {
+      fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`, {
+        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        const email = data.email || "";
+        const allowedDomains = ["@ceu.edu.ph", "@mnl.ceu.edu.ph", "@mkt.ceu.edu.ph", "@mls.ceu.edu.ph", "@ceis.edu.ph"];
         
-        // Clean up the URL
-        window.history.replaceState({}, document.title, window.location.pathname);
+        if (allowedDomains.some(domain => email.endsWith(domain))) {
+          setLoginError(false);
+          setPage("dashboard"); // Let them in!
+        } else {
+          setLoginError(true); // Reject them, show the red error box!
+        }
+      })
+      .catch((err) => {
+        console.log("Error verifying user:", err);
+      });
+    };
+    
+    // This "catches" the token from the URL after Google redirects you back!
+    React.useEffect(() => {
+      const hash = window.location.hash;
+      if (hash && hash.includes("access_token")) {
+        // Extract the token from the URL
+        const params = new URLSearchParams(hash.replace("#", "?"));
+        const token = params.get("access_token");
+        
+        if (token) {
+          // Run the email check!
+          validateUser(token);
+          // Clean up the messy token from the address bar so it looks nice
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
       }
     }, []);
-
-    // 2. This function simulates the validation for your frontend demo
-    // In a production app, you'd do this on a backend, but we can 
-    // fetch the user info directly for this prototype.
-    const validateUser = (code) => {
-      // For this prototype, we'll use the Google 'userinfo' endpoint.
-      // Note: In redirect 'auth-code' flow, we usually need a backend to get the token.
-      // As a shortcut for your UI demo, we can assume if they made it back with a code,
-      // we can let them in, OR we can use the 'implicit' flow token instead.
-      
-      // Let's switch your login hook slightly back to 'token' (implicit) 
-      // but keep the 'redirect' mode so we can actually read the email.
-      console.log("Validating code:", code);
-      setPage("dashboard"); 
-    };
-
+    
     return (
       <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
         <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e0", padding: "0 24px", height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -89,9 +96,11 @@ export default function App() {
               <span style={{ fontSize: "16px", color: "#333" }}>Login Options</span>
             </div>
             <div style={{ padding: "20px" }}>
+              {/* The Error Box will now properly show up if it's not a CEU email! */}
               {loginError && (
-                <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", padding: "16px", borderRadius: "4px", marginBottom: "20px", color: "#721c24", fontSize: "14px" }}>
-                  Only CEU GMail accounts are allowed...
+                <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", padding: "16px", borderRadius: "4px", marginBottom: "20px", color: "#721c24", fontSize: "14px", lineHeight: "1.5" }}>
+                  Only CEU GMail accounts are allowed (e.g. username@ceu.edu.ph, username@mnl.ceu.edu.ph, username@mkt.ceu.edu.ph, username@mls.ceu.edu.ph, username@ceis.edu.ph)<br /><br />
+                  <a href="https://accounts.google.com/Logout" target="_blank" rel="noreferrer" style={{ color: "#0056b3", textDecoration: "none" }}>Click here</a> to logout current account from Google.
                 </div>
               )}
               <div style={{ fontSize: "13px", color: "#333", marginBottom: "15px", display: "flex", alignItems: "center", gap: "8px" }}>
