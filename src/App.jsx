@@ -30,34 +30,40 @@ export default function App() {
   const LoginPage = ({ setPage }) => {
     const [loginError, setLoginError] = useState(false);
 
-    // This version forces the redirect by using the 'auth-code' flow
     const login = useGoogleLogin({
       ux_mode: 'redirect',
-      flow: 'auth-code',
-      redirect_uri: 'http://localhost:5173', // Hardcode it for now to test locally
-      onSuccess: (codeResponse) => {
-        handleAuthCode(codeResponse.code);
+      flow: 'implicit', // Use implicit to get the token directly in the URL
+      redirect_uri: window.location.origin, 
+      onSuccess: (tokenResponse) => {
+        checkEmail(tokenResponse.access_token);
       },
-      onError: (error) => console.log('Login Failed:', error)
     });
-
     const handleAuthCode = (code) => {
       // In a real app, you'd exchange this code for a token. 
       // For your frontend prototype, we'll simulate the validation.
       setPage("dashboard");
     };
 
-    // 1. This "catches" the login code from the URL after the redirect reload
     React.useEffect(() => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      
-      if (code) {
-        // We have the code! Now we need to verify the user
-        validateUser(code);
-        
-        // Clean up the URL
-        window.history.replaceState({}, document.title, window.location.pathname);
+      // Implicit flow puts the token after the # (hash)
+      const hashParams = new URLSearchParams(window.location.hash.replace("#", "?"));
+      const token = hashParams.get("access_token");
+
+      if (token) {
+        fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`)
+          .then(res => res.json())
+          .then(data => {
+            const email = data.email || "";
+            const allowed = ["@ceu.edu.ph", "@mnl.ceu.edu.ph", "@mkt.ceu.edu.ph", "@mls.ceu.edu.ph", "@ceis.edu.ph"];
+            
+            if (allowed.some(domain => email.endsWith(domain))) {
+              setPage("dashboard");
+            } else {
+              setLoginError(true);
+              // Clear the token so they don't get stuck
+              window.location.hash = "";
+            }
+          });
       }
     }, []);
 
