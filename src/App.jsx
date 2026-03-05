@@ -33,10 +33,9 @@ export default function App() {
     // This version forces the redirect by using the 'auth-code' flow
     const login = useGoogleLogin({
       ux_mode: 'redirect',
-      flow: 'auth-code', // Switch to auth-code flow for better redirect reliability
-      redirect_uri: window.location.origin, 
+      flow: 'auth-code',
+      redirect_uri: 'http://localhost:5173', // Hardcode it for now to test locally
       onSuccess: (codeResponse) => {
-        // This is caught if the redirect returns to the same component instance
         handleAuthCode(codeResponse.code);
       },
       onError: (error) => console.log('Login Failed:', error)
@@ -48,14 +47,17 @@ export default function App() {
       setPage("dashboard");
     };
 
-    // This handles the "Return" logic after the page reloads
+    // This "catches" the login code from the URL after the redirect reload
     React.useEffect(() => {
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
+      
       if (code) {
         // If we see 'code' in the URL, the redirect worked!
-        handleAuthCode(code);
-        // Clean up the URL so it looks nice
+        // For a frontend demo, we can just log them in
+        setPage("dashboard"); 
+        
+        // Clean up the URL so the 'code' disappears from the address bar
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }, []);
