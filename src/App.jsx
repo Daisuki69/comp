@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from "react";
-import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, useGoogleLogin, googleLogout } from '@react-oauth/google';
 
 const grades = [
   { code: "COMA11", description: "Mathematics in the Modern World", section: "SELAMS1A", prelim: "1.50", midterm: "1.50", endterm: "1.75", finals: "1.50" },
@@ -26,74 +26,68 @@ export default function App() {
   const uiScale = "100%"; 
   const uiSidePadding = "3.2%"; // Change this (e.g., "5%", "150px", "20vw") to squeeze the UI from the sides
 
-  // --- LOGIN PAGE COMPONENT ---
+// --- LOGIN PAGE COMPONENT ---
   const LoginPage = ({ setPage }) => {
     const [loginError, setLoginError] = useState(false);
 
+    // This version forces the redirect by using the 'auth-code' flow
     const login = useGoogleLogin({
+      ux_mode: 'redirect',
+      flow: 'auth-code', // Switch to auth-code flow for better redirect reliability
+      redirect_uri: window.location.origin, 
       onSuccess: (codeResponse) => {
-        // Fetch user info from Google using the access token
-        fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${codeResponse.access_token}`, {
-          headers: { Authorization: `Bearer ${codeResponse.access_token}`, Accept: 'application/json' }
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          const email = data.email || "";
-          // Check if it's a valid CEU domain
-          if (
-            email.endsWith("@ceu.edu.ph") ||
-            email.endsWith("@mnl.ceu.edu.ph") ||
-            email.endsWith("@mkt.ceu.edu.ph") ||
-            email.endsWith("@mls.ceu.edu.ph") ||
-            email.endsWith("@ceis.edu.ph")
-          ) {
-            setLoginError(false);
-            setPage("dashboard"); // Let them in!
-          } else {
-            setLoginError(true); // Reject them, show red box
-          }
-        })
-        .catch((err) => console.log(err));
+        // This is caught if the redirect returns to the same component instance
+        handleAuthCode(codeResponse.code);
       },
       onError: (error) => console.log('Login Failed:', error)
     });
 
+    const handleAuthCode = (code) => {
+      // In a real app, you'd exchange this code for a token. 
+      // For your frontend prototype, we'll simulate the validation.
+      setPage("dashboard");
+    };
+
+    // This handles the "Return" logic after the page reloads
+    React.useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        // If we see 'code' in the URL, the redirect worked!
+        handleAuthCode(code);
+        // Clean up the URL so it looks nice
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }, []);
+
     return (
       <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
-        {/* Simplified Header for Login Page */}
         <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e0", padding: "0 24px", height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontSize: "18px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
-          <span style={{ color: "#777", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px" }}>Login ➜</span>
+          <div style={{ color: "#777", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px" }}>Login ➜</div>
         </div>
 
-        {/* Login Box */}
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "60px" }}>
           <div style={{ width: "500px", background: "#fff", border: "1px solid #ddd", borderRadius: "4px", overflow: "hidden" }}>
             <div style={{ padding: "12px 16px", borderBottom: "1px solid #ddd", background: "#f9f9f9" }}>
               <span style={{ fontSize: "16px", color: "#333" }}>Login Options</span>
             </div>
-            
             <div style={{ padding: "20px" }}>
-              {/* Error Box (Only shows if they use wrong email) */}
               {loginError && (
-                <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", padding: "16px", borderRadius: "4px", marginBottom: "20px", color: "#721c24", fontSize: "14px", lineHeight: "1.5" }}>
-                  Only CEU GMail accounts are allowed (e.g. username@ceu.edu.ph, username@mnl.ceu.edu.ph, username@mkt.ceu.edu.ph, username@mls.ceu.edu.ph, username@ceis.edu.ph)<br /><br />
-                  <a href="#" style={{ color: "#0056b3", textDecoration: "none" }}>Click here</a> to logout current account from Google.
+                <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", padding: "16px", borderRadius: "4px", marginBottom: "20px", color: "#721c24", fontSize: "14px" }}>
+                  Only CEU GMail accounts are allowed...
                 </div>
               )}
-
-              {/* Disclaimer */}
               <div style={{ fontSize: "13px", color: "#333", marginBottom: "15px", display: "flex", alignItems: "center", gap: "8px" }}>
                 <span style={{ background: "#d9534f", color: "#fff", padding: "2px 6px", borderRadius: "3px", fontSize: "11px", fontWeight: "bold" }}>Disclaimer</span>
                 Beta test only. Grades on this site are not official nor in real-time.
               </div>
-
-              {/* Custom Google Button */}
               <button 
                 onClick={() => login()}
-                style={{ width: "100%", padding: "10px", background: "#fff", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer", fontSize: "16px", color: "#333", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
+                style={{ width: "100%", padding: "12px", background: "#fff", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer", fontSize: "16px", color: "#333", display: "flex", justifyContent: "center", alignItems: "center", gap: "12px" }}
               >
-                <span style={{ fontWeight: "bold", fontSize: "18px" }}>G</span> Login using CEU GMail
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" alt="G" style={{ width: "18px" }} /> 
+                Login using CEU GMail
               </button>
             </div>
           </div>
@@ -132,10 +126,19 @@ export default function App() {
     }}>
       <span style={{ fontSize: "18px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
       <button
-        onClick={() => setPage("dashboard")}
+        onClick={() => {
+          googleLogout(); // This clears the Google session
+          setPage("login"); // This moves the UI back to the login screen
+        }}
         style={{
-          background: "none", border: "none", cursor: "pointer",
-          color: "#555", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px"
+          background: "none", 
+          border: "none", 
+          cursor: "pointer",
+          color: "#555", 
+          fontSize: "14px", 
+          display: "flex", 
+          alignItems: "center", 
+          gap: "5px"
         }}
       >
         Logout ➜
