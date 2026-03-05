@@ -10,6 +10,7 @@ const grades = [
   { code: "COSH21", description: "Religion: History and Texts", section: "RHT1", prelim: "1.00", midterm: "1.75", endterm: "1.25", finals: "1.25" },
   { code: "PRPO120", description: "Fundamentals of Political Science", section: "BAPOL1A", prelim: "1.50", midterm: "2.00", endterm: "1.25", finals: "1.50" },
 ];
+
 const grades2 = [
   { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "", endterm: "", finals: "" },
   { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "", endterm: "", finals: "" },
@@ -26,6 +27,44 @@ export default function App() {
   const uiScale = "100%"; 
   const uiSidePadding = "3.2%"; // Change this (e.g., "5%", "150px", "20vw") to squeeze the UI from the sides
 
+  // This function fakes a network loading delay with adjustable speeds!
+  const navigate = (destination, isBackwards = false) => {
+    // If going backwards, load much faster! (150ms wait, 100ms white screen = 250ms total)
+    // If going forward, use normal speed! (400ms wait, 200ms white screen = 600ms total)
+    const loadDelay = isBackwards ? 0 : 1500; 
+    const totalDelay = isBackwards ? 2000 : 3000;
+
+    const style = document.createElement('style');
+    style.id = 'loading-cursor';
+    style.innerHTML = '* { cursor: wait !important; }';
+    document.head.appendChild(style);
+    
+    // Wipe the screen blank using the dynamic loadDelay timer
+    setTimeout(() => {
+      setPage("blank");
+      window.scrollTo(0, 0);
+    }, loadDelay);
+
+    // Reveal the new page using the dynamic totalDelay timer
+    setTimeout(() => {
+      setPage(destination);
+      document.getElementById('loading-cursor')?.remove(); 
+    }, totalDelay); 
+  };
+
+  // This automatically updates the browser tab title whenever the page changes!
+  React.useEffect(() => {
+    if (page === "login") {
+      document.title = "CEU login";
+    } else if (page === "dashboard") {
+      document.title = "School";
+    } else if (page === "history") {
+      document.title = "Enrollment History";
+    } else if (page === "details") {
+      document.title = "Enrollment Details";
+    }
+  }, [page]);
+  
 // --- LOGIN PAGE COMPONENT ---
   const LoginPage = ({ setPage }) => {
     const [loginError, setLoginError] = useState(false);
@@ -87,7 +126,12 @@ export default function App() {
       <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
         <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e0", padding: "0 24px", height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontSize: "18px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
-          <div style={{ color: "#777", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px" }}>Login ➜</div>
+          <div 
+            onClick={() => login()} 
+            style={{ color: "#777", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px", cursor: "pointer" }}
+          >
+            Login ➜
+          </div>
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "60px" }}>
@@ -111,7 +155,7 @@ export default function App() {
                 onClick={() => login()}
                 style={{ width: "100%", padding: "12px", background: "#fff", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer", fontSize: "16px", color: "#333", display: "flex", justifyContent: "center", alignItems: "center", gap: "12px" }}
               >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" alt="G" style={{ width: "18px" }} /> 
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G" style={{ width: "18px" }} /> 
                 Login using CEU GMail
               </button>
             </div>
@@ -187,7 +231,7 @@ export default function App() {
           </div>
           <div style={{ padding: "16px 20px" }}>
             <button
-              onClick={() => setPage("history")}
+              onClick={() => navigate("history")}
               style={{
                 background: "none", border: "none", cursor: "pointer",
                 color: "#3a6fc4", fontSize: "14px", padding: 0
@@ -224,7 +268,7 @@ export default function App() {
             <tr style={{ background: "#f9f9f9" }}>
               <td style={{ padding: "12px 0" }}>
                 <button
-                  onClick={() => { setSelectedGrades(grades); setSelectedPeriod("SY2025-2026-1"); setPage("details"); }}
+                  onClick={() => { setSelectedGrades(grades); setSelectedPeriod("SY2025-2026-1"); navigate("details"); }}
                   style={{
                     background: "none", border: "none", cursor: "pointer",
                     color: "#3a6fc4", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px"
@@ -239,7 +283,7 @@ export default function App() {
           <tr style={{ borderBottom: "2px solid #ccc" }}>
               <td style={{ padding: "12px 0" }}>
                 <button
-                  onClick={() => { setSelectedGrades(grades2); setSelectedPeriod("SY2025-2026-2"); setPage("details"); }}
+                  onClick={() => { setSelectedGrades(grades2); setSelectedPeriod("SY2025-2026-2"); navigate("details"); }}
                   style={{
                     background: "none", border: "none", cursor: "pointer",
                     color: "#3a6fc4", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px"
@@ -304,7 +348,7 @@ export default function App() {
 
         <div style={{ marginTop: backButtonMarginTop }}>
           <button
-            onClick={() => setPage("history")}
+            onClick={() => navigate("history", true)} // We added "true" to trigger the faster backwards speed!
             style={{
               background: "none", border: "none", cursor: "pointer",
               color: "#3a6fc4", fontSize: "14px"
@@ -326,6 +370,7 @@ export default function App() {
         {page === "dashboard" && <Dashboard />}
         {page === "history" && <EnrollmentHistory />}
         {page === "details" && <EnrollmentDetails />}
+        {page === "blank" && <div style={{ minHeight: "100vh", background: "#fff" }}></div>}
       </div>
     </GoogleOAuthProvider>
   );
