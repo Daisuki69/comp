@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from "react";
+import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 
 const grades = [
   { code: "COMA11", description: "Mathematics in the Modern World", section: "SELAMS1A", prelim: "1.50", midterm: "1.50", endterm: "1.75", finals: "1.50" },
@@ -19,22 +20,117 @@ const grades2 = [
 ];
 
 export default function App() {
-  const [page, setPage] = useState("dashboard");
+  const [page, setPage] = useState("login"); // Start on the login page!
   const [selectedGrades, setSelectedGrades] = useState(grades);
   const [selectedPeriod, setSelectedPeriod] = useState("SY2025-2026-1");
+  const uiScale = "100%"; 
+  const uiSidePadding = "3.2%"; // Change this (e.g., "5%", "150px", "20vw") to squeeze the UI from the sides
+
+  // --- LOGIN PAGE COMPONENT ---
+  const LoginPage = ({ setPage }) => {
+    const [loginError, setLoginError] = useState(false);
+
+    const login = useGoogleLogin({
+      onSuccess: (codeResponse) => {
+        // Fetch user info from Google using the access token
+        fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${codeResponse.access_token}`, {
+          headers: { Authorization: `Bearer ${codeResponse.access_token}`, Accept: 'application/json' }
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          const email = data.email || "";
+          // Check if it's a valid CEU domain
+          if (
+            email.endsWith("@ceu.edu.ph") ||
+            email.endsWith("@mnl.ceu.edu.ph") ||
+            email.endsWith("@mkt.ceu.edu.ph") ||
+            email.endsWith("@mls.ceu.edu.ph") ||
+            email.endsWith("@ceis.edu.ph")
+          ) {
+            setLoginError(false);
+            setPage("dashboard"); // Let them in!
+          } else {
+            setLoginError(true); // Reject them, show red box
+          }
+        })
+        .catch((err) => console.log(err));
+      },
+      onError: (error) => console.log('Login Failed:', error)
+    });
+
+    return (
+      <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
+        {/* Simplified Header for Login Page */}
+        <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e0", padding: "0 24px", height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: "18px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
+          <span style={{ color: "#777", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px" }}>Login ➜</span>
+        </div>
+
+        {/* Login Box */}
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: "60px" }}>
+          <div style={{ width: "500px", background: "#fff", border: "1px solid #ddd", borderRadius: "4px", overflow: "hidden" }}>
+            <div style={{ padding: "12px 16px", borderBottom: "1px solid #ddd", background: "#f9f9f9" }}>
+              <span style={{ fontSize: "16px", color: "#333" }}>Login Options</span>
+            </div>
+            
+            <div style={{ padding: "20px" }}>
+              {/* Error Box (Only shows if they use wrong email) */}
+              {loginError && (
+                <div style={{ background: "#f8d7da", border: "1px solid #f5c6cb", padding: "16px", borderRadius: "4px", marginBottom: "20px", color: "#721c24", fontSize: "14px", lineHeight: "1.5" }}>
+                  Only CEU GMail accounts are allowed (e.g. username@ceu.edu.ph, username@mnl.ceu.edu.ph, username@mkt.ceu.edu.ph, username@mls.ceu.edu.ph, username@ceis.edu.ph)<br /><br />
+                  <a href="#" style={{ color: "#0056b3", textDecoration: "none" }}>Click here</a> to logout current account from Google.
+                </div>
+              )}
+
+              {/* Disclaimer */}
+              <div style={{ fontSize: "13px", color: "#333", marginBottom: "15px", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span style={{ background: "#d9534f", color: "#fff", padding: "2px 6px", borderRadius: "3px", fontSize: "11px", fontWeight: "bold" }}>Disclaimer</span>
+                Beta test only. Grades on this site are not official nor in real-time.
+              </div>
+
+              {/* Custom Google Button */}
+              <button 
+                onClick={() => login()}
+                style={{ width: "100%", padding: "10px", background: "#fff", border: "1px solid #ccc", borderRadius: "4px", cursor: "pointer", fontSize: "16px", color: "#333", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", boxShadow: "0 1px 2px rgba(0,0,0,0.05)" }}
+              >
+                <span style={{ fontWeight: "bold", fontSize: "18px" }}>G</span> Login using CEU GMail
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // --- SHARED PAGE VARIABLES ---
+  const pageTopPadding = "15px"; 
+  const headerMarginTop = "22px"; 
+  const headerFontSize = "35.8px"; 
+  const headerIconGap = "10.95px"; 
+  
+  const pageIconSize = "28.9px"; // Controls both the folder image and the "↺" icon
+  const pageIconVerticalOffset = "-1.5px"; 
+  const pageIconHorizontalOffset = "1px"; 
+  
+  const subHeaderFontSize = "30px"; // Controls the "Carl Cedric Noval" text size
+  
+  // --- TABLE VARIABLES ---
+  const tableLeftGap = "16px"; 
+  const rightSideCols = "9%"; 
+  const backButtonMarginTop = "0px";
 
   const Header = () => (
     <div style={{
       background: "#f8f8f8",
       borderBottom: "1px solid #e0e0e0",
-      padding: "0 24px",
+      padding: `0 calc(${uiSidePadding} + 24px)`,
       height: "52px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
       fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
     }}>
-      <span style={{ fontSize: "15px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
+      <span style={{ fontSize: "18px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
       <button
         onClick={() => setPage("dashboard")}
         style={{
@@ -82,11 +178,11 @@ export default function App() {
   return (
     <div style={{ minHeight: "100vh", background: "#fff", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
       <Header />
-      <div style={{ padding: "40px 48px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: "400", display: "flex", alignItems: "center", gap: "12px", marginBottom: "28px" }}>
-          <span style={{ fontSize: "26px" }}>↺</span> Enrollment History
+      <div style={{ padding: `${pageTopPadding} calc(${uiSidePadding} + 24px)` }}>
+        <h1 style={{ marginTop: headerMarginTop, fontSize: headerFontSize, fontWeight: "400", display: "flex", alignItems: "center", gap: headerIconGap, marginBottom: "24px" }}>
+          <img src="/history.png" alt="history" style={{ left: pageIconHorizontalOffset, height: pageIconSize, position: "relative", top: pageIconVerticalOffset }} /> Enrollment History
         </h1>
-        <h2 style={{ fontSize: "28px", fontWeight: "400", marginBottom: "20px", color: "#222" }}>Carl Cedric Noval</h2>
+        <h2 style={{ fontSize: subHeaderFontSize, fontWeight: "400", marginBottom: "24px", color: "#222" }}>Carl Cedric Noval</h2>
 
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
           <thead>
@@ -135,28 +231,26 @@ export default function App() {
 };
 
   const EnrollmentDetails = () => {
-    const folderIconOffset2 = "-3px";
-    const rightSideCols = "9%"; // Change this percentage to compress or expand the right side
-    const headerFontSize = "35px"; // Change this to adjust the title font size
+    // Variables have been moved to the top of the App!
     
     return (
     <div style={{ minHeight: "100vh", background: "#fff", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
       <Header />
-      <div style={{ padding: "15px 48px" }}>
-        <h1 style={{ fontSize: headerFontSize, fontWeight: "400", display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-          <img src="/folder.png" alt="folder" style={{ height: headerFontSize, position: "relative", top: folderIconOffset2 }} /> Enrollment Details ({selectedPeriod})
+      <div style={{ padding: `${pageTopPadding} calc(${uiSidePadding} + 24px)` }}>
+        <h1 style={{ marginTop: headerMarginTop, fontSize: headerFontSize, fontWeight: "400", display: "flex", alignItems: "center", gap: headerIconGap, marginBottom: "24px" }}>
+          <img src="/folder.png" alt="folder" style={{ left: pageIconHorizontalOffset, height: pageIconSize, position: "relative", top: pageIconVerticalOffset }} /> Enrollment Details ({selectedPeriod})
         </h1>
-        <h2 style={{ fontSize: "30px", fontWeight: "400", marginBottom: "24px", color: "#222" }}>Carl Cedric Noval</h2>
+        <h2 style={{ fontSize: subHeaderFontSize, fontWeight: "400", marginBottom: "24px", color: "#222" }}>Carl Cedric Noval</h2>
 
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13.5px", position: "center" }}>
           <thead>
             <tr>
-              <th colSpan={2} style={{ textAlign: "left", padding: "6px 0", paddingBottom: "10px", fontWeight: "700", fontSize: "14px", borderBottom: "2px solid #e0e0e0" }}>Subject</th>
+              <th colSpan={2} style={{ textAlign: "left", padding: `6px 0 10px ${tableLeftGap}`, fontWeight: "700", fontSize: "14px", borderBottom: "2px solid #e0e0e0" }}>Subject</th>
               <th colSpan={1} style={{ borderBottom: "none" }}></th>
-              <th colSpan={4} style={{ textAlign: "left", padding: "6px 0", paddingBottom: "10px", fontWeight: "700", fontSize: "14px", borderBottom: "2px solid #e0e0e0" }}>Combined Grades</th>
+              <th colSpan={4} style={{ textAlign: "left", padding: "6px 0", paddingBottom: "10px", fontWeight: "700", fontSize: "14px", borderBottom: "2px solid #e0e0e0" }}> Combined Grades</th>
             </tr>
             <tr style={{ borderBottom: "2px solid #e0e0e0" }}>
-              <th style={{ textAlign: "left", padding: "12px 0 8px 0", fontWeight: "700", width: "10%" }}>Code</th>
+              <th style={{ textAlign: "left", padding: `12px 0 8px ${tableLeftGap}`, fontWeight: "700", width: "10%" }}>Code</th>
               <th style={{ textAlign: "left", padding: "12px 0 8px 0", fontWeight: "700" }}>Description</th>
               <th style={{ textAlign: "left", padding: "12px 0 8px 0", fontWeight: "700", width: `calc(${rightSideCols} + 3%)` }}>Section</th>
               <th style={{ textAlign: "left", padding: "12px 0 8px 0", fontWeight: "700", width: rightSideCols }}>Prelim</th>
@@ -167,8 +261,8 @@ export default function App() {
           </thead>
           <tbody>
             {selectedGrades.map((g, i) => (
-              <tr key={i} style={{ borderBottom: "1.7px solid #eee", background: i % 2 === 0 ? "#f7f7f7" : "#fff" }}>
-                <td style={{ padding: "12px 0", color: "#333" }}>{g.code}</td>
+              <tr key={i} style={{ borderBottom: i === selectedGrades.length - 1 ? "none" : "1.7px solid #eee", background: i % 2 === 0 ? "#f7f7f7" : "#fff" }}>
+                <td style={{ padding: `12px 0 12px ${tableLeftGap}`, color: "#333" }}>{g.code}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.description}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.section}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.prelim}</td>
@@ -180,7 +274,7 @@ export default function App() {
           </tbody>
         </table>
 
-        <div style={{ marginTop: "24px" }}>
+        <div style={{ marginTop: backButtonMarginTop }}>
           <button
             onClick={() => setPage("history")}
             style={{
@@ -197,10 +291,14 @@ export default function App() {
 };
 
   return (
-    <div style={{ border: "1px solid #ccc", borderRadius: "8px", overflow: "hidden", minHeight: "100vh" }}>
-      {page === "dashboard" && <Dashboard />}
-      {page === "history" && <EnrollmentHistory />}
-      {page === "details" && <EnrollmentDetails />}
-    </div>
+    // You will replace the clientId string below with your own later!
+    <GoogleOAuthProvider clientId="418147323545-a74an3aau45fm26b3buga7d85mkomd99.apps.googleusercontent.com">
+      <div style={{ zoom: uiScale, minHeight: "100vh" }}>
+        {page === "login" && <LoginPage setPage={setPage} />}
+        {page === "dashboard" && <Dashboard />}
+        {page === "history" && <EnrollmentHistory />}
+        {page === "details" && <EnrollmentDetails />}
+      </div>
+    </GoogleOAuthProvider>
   );
 }
