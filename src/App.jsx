@@ -124,14 +124,14 @@ export default function App() {
     
     return (
       <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
-        <div style={{ background: "#fff", borderBottom: "1px solid #e0e0e0", padding: "0 24px", height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ background: "#f8f8f8", borderBottom: "1px solid #e0e0e0", padding: `0 calc(${uiSidePadding} + 24px)`, height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontSize: "18px", color: "#555", letterSpacing: "0.05em" }}>CEU</span>
-          <div 
+          <button 
             onClick={() => login()} 
-            style={{ color: "#777", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px", cursor: "pointer" }}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#555", fontSize: "14px", display: "flex", alignItems: "center", gap: "5px" }}
           >
             Login ➜
-          </div>
+          </button>
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", paddingTop: "60px" }}>
