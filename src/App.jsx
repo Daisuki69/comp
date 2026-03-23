@@ -28,7 +28,7 @@ export default function App() {
   const uiSidePadding = "3.2%"; // Change this (e.g., "5%", "150px", "20vw") to squeeze the UI from the sides
 
   // This function fakes a network loading delay with adjustable speeds!
-  const navigate = (destination, isBackwards = false) => {
+  const navigate = (destination, isBackwards = false, noBlank = false) => {
     // If going backwards, load much faster! (150ms wait, 100ms white screen = 250ms total)
     // If going forward, use normal speed! (400ms wait, 200ms white screen = 600ms total)
     const loadDelay = isBackwards ? 0 : 1500; 
@@ -40,14 +40,17 @@ export default function App() {
     document.head.appendChild(style);
     
     // Wipe the screen blank using the dynamic loadDelay timer
-    setTimeout(() => {
-      setPage("blank");
-      window.scrollTo(0, 0);
-    }, loadDelay);
+    if (!noBlank) {
+      setTimeout(() => {
+        setPage("blank");
+        window.scrollTo(0, 0);
+      }, loadDelay);
+    }
 
     // Reveal the new page using the dynamic totalDelay timer
     setTimeout(() => {
       setPage(destination);
+      if (noBlank) window.scrollTo(0, 0);
       document.getElementById('loading-cursor')?.remove(); 
     }, totalDelay); 
   };
@@ -197,7 +200,7 @@ export default function App() {
       <button
         onClick={() => {
           googleLogout(); // This clears the Google session
-          navigate("login", true); // This moves the UI back to the login screen with the backwards delay
+          navigate("login", true, true); // This moves the UI back to the login screen with the backwards delay, but no blank screen
         }}
         style={{
           background: "none", 
