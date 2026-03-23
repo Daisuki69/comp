@@ -71,6 +71,8 @@ export default function App() {
 // --- LOGIN PAGE COMPONENT ---
   const LoginPage = ({ setPage }) => {
     const [loginError, setLoginError] = useState(false);
+    // Check URL immediately to prevent flashing the login UI when returning from Google
+    const [isAuthenticating, setIsAuthenticating] = useState(() => window.location.hash.includes("access_token"));
 
     // The library automatically detects when you return from Google
     // and fires this "onSuccess" instantly!
@@ -101,10 +103,12 @@ export default function App() {
           setPage("dashboard"); // Let them in!
         } else {
           setLoginError(true); // Reject them, show the red error box!
+          setIsAuthenticating(false); // Show the login UI again
         }
       })
       .catch((err) => {
         console.log("Error verifying user:", err);
+        setIsAuthenticating(false); // Show the login UI again on error
       });
     };
     
@@ -125,6 +129,11 @@ export default function App() {
       }
     }, []);
     
+    // If we are currently verifying the token from Google, show a blank screen to prevent UI flashing
+    if (isAuthenticating) {
+      return <div style={{ minHeight: "100vh", background: "#f5f5f5" }}></div>;
+    }
+
     return (
       <div style={{ minHeight: "100vh", background: "#f5f5f5", fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}>
         <div style={{ background: "#f8f8f8", borderBottom: "1px solid #e0e0e0", padding: `0 calc(${uiSidePadding} + 24px)`, height: "52px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
