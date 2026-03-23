@@ -197,7 +197,7 @@ export default function App() {
       <button
         onClick={() => {
           googleLogout(); // This clears the Google session
-          setPage("login"); // This moves the UI back to the login screen
+          navigate("login", true); // This moves the UI back to the login screen with the backwards delay
         }}
         style={{
           background: "none", 
