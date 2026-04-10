@@ -13,11 +13,11 @@ const grades = [
 
 const grades2 = [
   { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.0", endterm: "", finals: "" },
-  { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "", endterm: "", finals: "" },
-  { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "1.25", midterm: "", endterm: "", finals: "" },
-  { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.25", midterm: "", endterm: "", finals: "" },
-  { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.25", midterm: "", endterm: "", finals: "" },
-  { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "", endterm: "", finals: "" },
+  { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "1.00", endterm: "", finals: "" },
+  { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "1.25", midterm: "1.25", endterm: "", finals: "" },
+  { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "", finals: "" },
+  { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "", finals: "" },
+  { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "1.00", endterm: "", finals: "" },
 ];
 
 export default function App() {
