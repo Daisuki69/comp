@@ -6,7 +6,7 @@ const grades = [
   { code: "COMA11", description: "Mathematics in the Modern World", section: "SELAMS1A", prelim: "1.50", midterm: "1.50", endterm: "1.75" },
   { code: "COPE21", description: "PATH-FIT 1: Movement Competency Training", section: "SELAMS1A", prelim: "1.00", midterm: "1.25", endterm: "1.00" },
   { code: "COPY11", description: "Understanding the Self", section: "SELAMS1A", prelim: "1.00", midterm: "2.25", endterm: "1.00" },
-  { code: "COSH11", description: "Empowering the Self", section: "ETS1", prelim: "N/A", midterm: "2.00", endterm: "1.75" },
+  { code: "COSH11", description: "Empowering the Self", section: "ETS1", prelim: "NA", midterm: "2.00", endterm: "1.75" },
   { code: "COSH21", description: "Religion: History and Texts", section: "RHT1", prelim: "1.00", midterm: "1.75", endterm: "1.25" },
   { code: "PRPO120", description: "Fundamentals of Political Science", section: "BAPOL1A", prelim: "1.50", midterm: "2.00", endterm: "1.25" },
 ];
@@ -23,8 +23,8 @@ const grades2 = [
 const calculateFinalGrade = (prelim, midterm, endterm) => {
   const rawTerms = [prelim, midterm, endterm];
   
-  // We expect 3 grades, unless a term is explicitly marked as "N/A" (intentionally omitted)
-  const expectedCount = rawTerms.filter(term => term !== "N/A").length;
+  // We expect 3 grades, unless a term is explicitly marked as "NA" (intentionally omitted)
+  const expectedCount = rawTerms.filter(term => term !== "NA").length;
   
   // Filter out blanks ("") and get the actual valid numerical grades
   const validGrades = rawTerms.filter(val => val && !isNaN(parseFloat(val))).map(parseFloat);
@@ -370,9 +370,9 @@ export default function App() {
                 <td style={{ padding: `12px 0 12px ${tableLeftGap}`, color: "#333" }}>{g.code}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.description}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.section}</td>
-                <td style={{ padding: "12px 0", color: "#333" }}>{g.prelim}</td>
-                <td style={{ padding: "12px 0", color: "#333" }}>{g.midterm}</td>
-                <td style={{ padding: "12px 0", color: "#333" }}>{g.endterm}</td>
+                <td style={{ padding: "12px 0", color: "#333" }}>{g.prelim === "NA" ? "" : g.prelim}</td>
+                <td style={{ padding: "12px 0", color: "#333" }}>{g.midterm === "NA" ? "" : g.midterm}</td>
+                <td style={{ padding: "12px 0", color: "#333" }}>{g.endterm === "NA" ? "" : g.endterm}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{calculateFinalGrade(g.prelim, g.midterm, g.endterm)}</td>
               </tr>
             ))}
