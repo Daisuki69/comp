@@ -3,22 +3,33 @@ import { useState } from "react";
 import { GoogleOAuthProvider, useGoogleLogin, googleLogout } from '@react-oauth/google';
 
 const grades = [
-  { code: "COMA11", description: "Mathematics in the Modern World", section: "SELAMS1A", prelim: "1.50", midterm: "1.50", endterm: "1.75", finals: "1.50" },
-  { code: "COPE21", description: "PATH-FIT 1: Movement Competency Training", section: "SELAMS1A", prelim: "1.00", midterm: "1.25", endterm: "1.00", finals: "1.00" },
-  { code: "COPY11", description: "Understanding the Self", section: "SELAMS1A", prelim: "1.00", midterm: "2.25", endterm: "1.00", finals: "1.50" },
-  { code: "COSH11", description: "Empowering the Self", section: "ETS1", prelim: "", midterm: "2.00", endterm: "1.75", finals: "1.75" },
-  { code: "COSH21", description: "Religion: History and Texts", section: "RHT1", prelim: "1.00", midterm: "1.75", endterm: "1.25", finals: "1.25" },
-  { code: "PRPO120", description: "Fundamentals of Political Science", section: "BAPOL1A", prelim: "1.50", midterm: "2.00", endterm: "1.25", finals: "1.50" },
+  { code: "COMA11", description: "Mathematics in the Modern World", section: "SELAMS1A", prelim: "1.50", midterm: "1.50", endterm: "1.75" },
+  { code: "COPE21", description: "PATH-FIT 1: Movement Competency Training", section: "SELAMS1A", prelim: "1.00", midterm: "1.25", endterm: "1.00" },
+  { code: "COPY11", description: "Understanding the Self", section: "SELAMS1A", prelim: "1.00", midterm: "2.25", endterm: "1.00" },
+  { code: "COSH11", description: "Empowering the Self", section: "ETS1", prelim: "", midterm: "2.00", endterm: "1.75" },
+  { code: "COSH21", description: "Religion: History and Texts", section: "RHT1", prelim: "1.00", midterm: "1.75", endterm: "1.25" },
+  { code: "PRPO120", description: "Fundamentals of Political Science", section: "BAPOL1A", prelim: "1.50", midterm: "2.00", endterm: "1.25" },
 ];
 
 const grades2 = [
-  { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.00", endterm: "", finals: "" },
-  { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "1.00", endterm: "", finals: "" },
-  { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "1.25", midterm: "1.25", endterm: "", finals: "" },
-  { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "", finals: "" },
-  { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "", finals: "" },
-  { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "1.00", endterm: "", finals: "" },
+  { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.00", endterm: "" },
+  { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "1.00", endterm: "" },
+  { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "1.25", midterm: "1.25", endterm: "" },
+  { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "" },
+  { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "" },
+  { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "1.00", endterm: "" },
 ];
+
+const calculateFinalGrade = (prelim, midterm, endterm) => {
+  const terms = [prelim, midterm, endterm].filter(val => val && !isNaN(parseFloat(val))).map(parseFloat);
+  if (terms.length === 0) return "";
+  
+  const average = terms.reduce((sum, val) => sum + val, 0) / terms.length;
+  // Round to nearest 0.25, while forcing halfway ties (e.g. 1.875) to round down to the smaller number (1.75)
+  const finalGrade = Math.round(average * 4 - 0.000001) / 4;
+  
+  return finalGrade.toFixed(2);
+};
 
 export default function App() {
   const [page, setPage] = useState("login"); // Start on the login page!
@@ -352,7 +363,7 @@ export default function App() {
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.prelim}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.midterm}</td>
                 <td style={{ padding: "12px 0", color: "#333" }}>{g.endterm}</td>
-                <td style={{ padding: "12px 0", color: "#333" }}>{g.finals}</td>
+                <td style={{ padding: "12px 0", color: "#333" }}>{calculateFinalGrade(g.prelim, g.midterm, g.endterm)}</td>
               </tr>
             ))}
           </tbody>
