@@ -12,12 +12,12 @@ const grades = [
 ];
 
 const grades2 = [
-  { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.00", endterm: "" },
-  { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "1.25", endterm: "" },
-  { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "1.25", midterm: "1.50", endterm: "" },
-  { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "" },
-  { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.50", midterm: "1.25", endterm: "" },
-  { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "1.00", endterm: "" },
+  { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.75", endterm: "1.50" },
+  { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "1.50", endterm: "1.25" },
+  { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "1.25", midterm: "1.50", endterm: "1.75" },
+  { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.50", midterm: "2.25", endterm: "2.00" },
+  { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.50", midterm: "2.00", endterm: "1.75" },
+  { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "1.75", endterm: "2.00" },
 ];
 
 const calculateFinalGrade = (prelim, midterm, endterm) => {
