@@ -21,14 +21,40 @@ const grades2 = [
 ];
 
 const grades3 = [
-  { code: "COPE23", description: " PATH-FIT 3: Dance/Individual-Dual Sports", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COPE23", description: "PATH-FIT 3: Dance/Individual-Dual Sports", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
   { code: "CONS21", description: "Science, Technology and Society", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
   { code: "COLA32", description: "Foreign Language 2", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
-  { code: "COLA11", description: " Purposive Communication", section: "SELAMS1A", prelim: "NA", midterm: "", endterm: "" },
+  { code: "COLA11", description: "Purposive Communication", section: "SELAMS1A", prelim: "NA", midterm: "", endterm: "" },
   { code: "PRPO123", description: "Philippine Public Administration", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
   { code: "PRPO124", description: "Politics and Governance of Southeast Asia", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
   { code: "COSH41", description: "Readings in Philippine History", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
-  { code: "CONP11", description: " NSTP 1", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "CONP11", description: "NSTP 1", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+];
+
+const grades4 = [
+  { code: "COPE24", description: "PATH-FIT 4: Team Sports/Games", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COSH42", description: "The Contemporary World", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO125", description: "Introduction to Political Theory", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO126", description: "Introduction to International Relations", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "COSH32", description: "Ethics", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "CONP12", description: "NSTP 2", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+];
+
+const grades5 = [
+  { code: "COSH22", description: "Man, Church and Society", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COLA21", description: " Malikhaing Komunikasyon Gamit ang Panitikang Popular", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO127", description: "International and Regional Organizations", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO131", description: "International Law", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "COLA52", description: "Philippine Literature", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COSH12", description: "Living and Loving Relationship", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+];
+
+const grades6 = [
+  { code: "PRPO191", description: "Introduction to Political Analysis and Research (Undergraduate Research 1)", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO128", description: "Diplomatic and Consular Relations", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO129", description: "Politics and  Media", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "COLA22", description: "Kontekstwalisadong Komunikasyon sa Filipino", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COEF21", description: "Environmental Stewardship", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
 ];
 
 const calculateFinalGrade = (prelim, midterm, endterm) => {
