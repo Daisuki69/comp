@@ -324,7 +324,7 @@ export default function App() {
               <td style={{ padding: "12px 0", color: "#333" }}>Bachelor of Arts in Political Science - A</td>
               <td style={{ padding: "12px 0", color: "#333" }}>BAPS-A1</td>
             </tr>
-          <tr style={{ borderBottom: "2px solid #ccc" }}>
+          <tr style={{ borderBottom: "0px solid #ccc" }}>
               <td style={{ padding: "12px 0" }}>
                 <button
                   onClick={() => { setSelectedGrades(grades2); setSelectedPeriod("SY2025-2026-2"); navigate("details"); }}
@@ -348,7 +348,7 @@ export default function App() {
                     color: "#3a6fc4", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px"
                   }}
                 >
-                  <img src="/folt.png" style={{ width: "13px", height: "11.5px", verticalAlign: "middle", position: "relative", top: folderIconOffset }} /> SY2025-2026-2
+                  <img src="/folt.png" style={{ width: "13px", height: "11.5px", verticalAlign: "middle", position: "relative", top: folderIconOffset }} /> SY2026-2027-1
                 </button>
               </td>
               <td style={{ padding: "12px 0", color: "#333" }}>Bachelor of Arts in Political Science - A</td>
