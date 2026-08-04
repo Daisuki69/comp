@@ -12,12 +12,23 @@ const grades = [
 ];
 
 const grades2 = [
-  { code: "COPE22", description: "PATH-FIT 2: Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.75", endterm: "1.50" },
+  { code: "COPE22", description: "PATH-FIT 2: Swimming/Recreation", section: "SELAMS1A", prelim: "1.00", midterm: "1.75", endterm: "1.50" },
   { code: "COSH31", description: "Art Appreciation", section: "SELAMS1A", prelim: "1.00", midterm: "1.50", endterm: "1.25" },
   { code: "COLA51", description: "Expository Writing for Global Communication", section: "EWGC1", prelim: "NA", midterm: "1.50", endterm: "1.75" },
   { code: "PRPO121", description: "Introduction to Philippine Politics and Governance", section: "BAPOL1A	", prelim: "1.50", midterm: "2.25", endterm: "2.00" },
   { code: "PRPO122", description: "Introduction to Comparative Politics", section: "BAPOL1A	", prelim: "1.50", midterm: "2.00", endterm: "1.75" },
   { code: "COSH41", description: "Readings in Philippine History", section: "RPH1", prelim: "1.00", midterm: "1.75", endterm: "2.00" },
+];
+
+const grades3 = [
+  { code: "COPE23", description: " PATH-FIT 3: Dance/Individual-Dual Sports", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "CONS21", description: "Science, Technology and Society", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COLA32", description: "Foreign Language 2", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COLA11", description: " Purposive Communication", section: "SELAMS1A", prelim: "NA", midterm: "", endterm: "" },
+  { code: "PRPO123", description: "Philippine Public Administration", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "PRPO124", description: "Politics and Governance of Southeast Asia", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
+  { code: "COSH41", description: "Readings in Philippine History", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "CONP11", description: " NSTP 1", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
 ];
 
 const calculateFinalGrade = (prelim, midterm, endterm) => {
@@ -317,6 +328,21 @@ export default function App() {
               <td style={{ padding: "12px 0" }}>
                 <button
                   onClick={() => { setSelectedGrades(grades2); setSelectedPeriod("SY2025-2026-2"); navigate("details"); }}
+                  style={{
+                    background: "none", border: "none", cursor: "pointer",
+                    color: "#3a6fc4", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px"
+                  }}
+                >
+                  <img src="/folt.png" style={{ width: "13px", height: "11.5px", verticalAlign: "middle", position: "relative", top: folderIconOffset }} /> SY2025-2026-2
+                </button>
+              </td>
+              <td style={{ padding: "12px 0", color: "#333" }}>Bachelor of Arts in Political Science - A</td>
+              <td style={{ padding: "12px 0", color: "#333" }}>BAPS-A1</td>
+            </tr>
+          <tr style={{ borderBottom: "2px solid #ccc" }}>
+              <td style={{ padding: "12px 0" }}>
+                <button
+                  onClick={() => { setSelectedGrades(grades3); setSelectedPeriod("SY2026-2027-1"); navigate("details"); }}
                   style={{
                     background: "none", border: "none", cursor: "pointer",
                     color: "#3a6fc4", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px"
