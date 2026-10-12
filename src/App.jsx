@@ -21,14 +21,14 @@ const grades2 = [
 ];
 
 const grades3 = [
-  { code: "COPE23", description: "PATH-FIT 3: Dance/Individual-Dual Sports", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
-  { code: "CONS21", description: "Science, Technology and Society", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
-  { code: "COLA32", description: "Foreign Language 2", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
-  { code: "COLA11", description: "Purposive Communication", section: "SELAMS1A", prelim: "NA", midterm: "", endterm: "" },
-  { code: "PRPO123", description: "Philippine Public Administration", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
-  { code: "PRPO124", description: "Politics and Governance of Southeast Asia", section: "BAPOL1A	", prelim: "", midterm: "", endterm: "" },
-  { code: "COSH41", description: "Readings in Philippine History", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
-  { code: "CONP11", description: "NSTP 1", section: "SELAMS1A", prelim: "", midterm: "", endterm: "" },
+  { code: "COPE23", description: "PATH-FIT 3: Dance/Individual-Dual Sports", section: "SELAMS1A", prelim: "1.25", midterm: "1.25", endterm: "" },
+  { code: "CONS21", description: "Science, Technology and Society", section: "SELAMS1A", prelim: "1.25", midterm: "", endterm: "" },
+  { code: "COLA32", description: "Foreign Language 2", section: "SELAMS1A", prelim: "1.50", midterm: "1.25", endterm: "" },
+  { code: "COLA11", description: "Purposive Communication", section: "SELAMS1A", prelim: "1.75", midterm: "", endterm: "" },
+  { code: "PRPO123", description: "Philippine Public Administration", section: "BAPOL1A", prelim: "1.00", midterm: "", endterm: "" },
+  { code: "PRPO124", description: "Politics and Governance of Southeast Asia", section: "BAPOL1A", prelim: "1.00", midterm: "", endterm: "" },
+  { code: "COSH41", description: "Readings in Philippine History", section: "SELAMS1A", prelim: "1.00", midterm: "", endterm: "" },
+  { code: "CONP11", description: "NSTP 1", section: "SELAMS1A", prelim: "1.00", midterm: "", endterm: "" },
 ];
 
 const grades4 = [
